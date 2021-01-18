@@ -52,7 +52,6 @@ function saveUserInformation(msg) {
     });
     usuariosService.addUser(nombres, apellidos, userId);
   }
-  return;
 }
 
 function getUserData(userId) {
@@ -99,8 +98,11 @@ async function handleDialogFlowAction(
     preguntas,
     ordenPregunta;
   switch (action) {
-    case "Test-Intent.action":
+    case "TestIntent.action":
       sendTextMessage(sender, "Este mensaje fue enviado desde el código");
+      break;
+    case "HelloWorld.action":
+      sendTextMessage(sender, "World");
       break;
     case "EmpezarAuditoria.action":
       await handleMessages(messages, sender);
