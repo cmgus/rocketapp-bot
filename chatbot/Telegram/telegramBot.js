@@ -40,6 +40,19 @@ bot.on("message", async (msg) => {
   await sendToDialogFlow(sender, message);
 });
 
+const { GoogleSpreadsheet } = require('google-spreadsheet')
+const creds = require('../../client_secret.json')
+async function sendListaEstudiantes(sender) {
+  const doc = new GoogleSpreadsheet('1LPF1XPY0ZkHNgNv0ITQM1QLjjFc8MK4rSL8NRZHIhGY')
+  await doc.useServiceAccountAuth(creds)
+  await doc.loadInfo()
+  const rows = await doc.sheetsByIndex[0].getRows()
+  let listaEstudiantes = ''
+  for (const row of rows) {
+    listaEstudiantes += `${row['N°']}. ${row['Nombres y Apellidos']}\n`
+  }
+  sendTextMessage(sender, listaEstudiantes)
+}
 function saveUserInformation(msg) {
   let userId = msg.from.id;
   let nombres = msg.from.first_name;
@@ -98,6 +111,9 @@ async function handleDialogFlowAction(
     preguntas,
     ordenPregunta;
   switch (action) {
+    case "ListarEstudiantes.action":
+      sendListaEstudiantes(sender)
+      break
     case "TestIntent.action":
       sendTextMessage(sender, "Este mensaje fue enviado desde el código");
       break;
