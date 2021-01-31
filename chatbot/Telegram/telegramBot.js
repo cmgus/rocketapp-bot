@@ -61,7 +61,7 @@ async function crearHoja(sender, documentId) {
       title: 'Hola desde el servidor 3',
       headerValues: ['Hola', 'desde', 'el servidor']
     })
-    newSheet.addRows([
+    await newSheet.addRows([
       {
         'Hola': 'test1.1',
         'desde': 'test2.1',
@@ -73,8 +73,10 @@ async function crearHoja(sender, documentId) {
         'el servidor': 'test3'
       }
     ])
-    sendTextMessage(sender, 'Hoja creada')
+    await sendTextMessage(sender, 'Hoja creada')
   } catch (error) {
+    console.log(error)
+    console.log(error.code)
     console.log('Documento no encontrado %s', documentId)
     sendTextMessage(sender, 'Documento no encontrado ' + documentId)
   }
