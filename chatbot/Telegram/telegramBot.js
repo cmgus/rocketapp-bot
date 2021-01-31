@@ -75,8 +75,8 @@ async function crearHoja(sender, documentId) {
     ])
     sendTextMessage(sender, 'Hoja creada')
   } catch (error) {
-    sendTextMessage(sender, 'Documento no encontrado %s', documentId)
-    console.log('Documento no encontrado')
+    console.log('Documento no encontrado %s', documentId)
+    sendTextMessage(sender, 'Documento no encontrado ' + documentId)
   }
 }
 function saveUserInformation(msg) {
