@@ -53,6 +53,31 @@ async function sendListaEstudiantes(sender) {
   }
   sendTextMessage(sender, listaEstudiantes)
 }
+async function crearHoja(sender, documentId) {
+  try {
+    const doc = new GoogleSpreadsheet(documentId)
+    await doc.useServiceAccountAuth(creds)
+    const newSheet = await doc.addSheet({
+      title: 'Hola desde el servidor 3',
+      headerValues: ['Hola', 'desde', 'el servidor']
+    })
+    newSheet.addRows([
+      {
+        'Hola': 'test1.1',
+        'desde': 'test2.1',
+        'el servidor': 'test3.1'
+      },
+      {
+        'Hola': 'test1',
+        'desde': 'test2',
+        'el servidor': 'test3'
+      }
+    ])
+    sendTextMessage(sender, 'Hoja creada')
+  } catch (error) {
+    console.log('Documento no encontrado')
+  }
+}
 function saveUserInformation(msg) {
   let userId = msg.from.id;
   let nombres = msg.from.first_name;
@@ -113,6 +138,9 @@ async function handleDialogFlowAction(
   switch (action) {
     case "ListarEstudiantes.action":
       sendListaEstudiantes(sender)
+      break
+    case "IngresoDocumentUrl.action":
+      crearHoja(sender, parameters.fields.url.stringValue.split('/')[5])
       break
     case "TestIntent.action":
       sendTextMessage(sender, "Este mensaje fue enviado desde el código");
