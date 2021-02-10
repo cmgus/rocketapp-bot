@@ -2,7 +2,7 @@ process.env.NTBA_FIX_319 = 1;
 const config = require("../../config"); //Archivo configuracion Bot
 const TelegramBot = require("node-telegram-bot-api"); //Importante - libreria Telegram
 const dialogflow = require("../dialogflow");
-const axios = require('axios').default
+const axios = require('axios')
 const { structProtoToJson } = require("../helpers/structFunctions");
 
 // Llamada a funciones de BD
