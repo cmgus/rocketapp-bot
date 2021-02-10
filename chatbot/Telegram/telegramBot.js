@@ -2,6 +2,7 @@ process.env.NTBA_FIX_319 = 1;
 const config = require("../../config"); //Archivo configuracion Bot
 const TelegramBot = require("node-telegram-bot-api"); //Importante - libreria Telegram
 const dialogflow = require("../dialogflow");
+const axios = require('axios').default
 const { structProtoToJson } = require("../helpers/structFunctions");
 
 // Llamada a funciones de BD
@@ -81,6 +82,26 @@ async function crearHoja(sender, documentId) {
     sendTextMessage(sender, 'Documento no encontrado ' + documentId)
   }
 }
+
+async function sendCurrentTime(sender, city) {
+  try {
+    const URL = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=es&appid=0548a151a8decc52f6b910e047556340`
+    const result = await (await axios.get(URL)).data
+    console.log(result)
+    sendTextMessage(sender, `
+      En ${city} el tiempo es:
+      - Clima: <b>${result.weather[0].main + ' - ' + result.weather[0].description}</b>
+      - Temperatura: <b>${result.main.temp} °C</b>
+      - Humedad: <b>${result.main.humidity} %</b>
+      - Nublado: <b>${result.clouds.all} %</b>
+      - V. de Viento: <b>${result.wind.speed} m/s</b>
+    `)
+    // sendTextMessage(sender, 'OK')
+  } catch (error) {
+    console.log(error)
+    sendTextMessage(sender, `No se encontro la ciudad <b>${city}</b>`)
+  }
+}
 function saveUserInformation(msg) {
   let userId = msg.from.id;
   let nombres = msg.from.first_name;
@@ -139,6 +160,9 @@ async function handleDialogFlowAction(
     preguntas,
     ordenPregunta;
   switch (action) {
+    case "TiempoActual.action":
+      await sendCurrentTime(sender, parameters.fields['geo-city'].stringValue)
+      break
     case "ListarEstudiantes.action":
       sendListaEstudiantes(sender)
       break
